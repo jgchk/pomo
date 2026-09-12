@@ -1,1 +1,2 @@
 - Use conventional commits
+- Write tests for all new code

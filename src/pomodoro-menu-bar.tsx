@@ -21,11 +21,8 @@ import {
 import { fireNotification } from "./notify";
 import { getLastSlackError } from "./slackErrorStore";
 import { handlePhaseEvent } from "./slackFocusSync";
+import { formatTimerLabel } from "./timerDisplay";
 import { Phase, PomodoroState } from "./types";
-
-function formatDuration(ms: number): string {
-  return `${Math.floor(ms / 60000)}`;
-}
 
 function phaseLabel(phase: Phase): string {
   switch (phase) {
@@ -125,11 +122,10 @@ export default function Command() {
   const nominalDurationMs = state.phase === "work" ? prefs.workDurationMs : prefs.breakDurationMs;
   const elapsedMs = getElapsedMs(state);
   const overtimeMs = getOvertimeMs(state, nominalDurationMs);
-  const isOvertime = isTimedPhase && elapsedMs > nominalDurationMs;
 
   let title = phaseLabel(state.phase);
   if (isTimedPhase) {
-    title += isOvertime ? ` +${formatDuration(overtimeMs)}` : ` ${formatDuration(elapsedMs)}`;
+    title += ` ${formatTimerLabel(elapsedMs, overtimeMs, nominalDurationMs)}`;
   }
 
   const icon = slackError ? Icon.ExclamationMark : Icon.Circle;
