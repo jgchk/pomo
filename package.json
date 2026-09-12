@@ -1,0 +1,73 @@
+{
+  "$schema": "https://www.raycast.com/schemas/extension.json",
+  "name": "pomo",
+  "title": "Pomo",
+  "description": "A manual-step Pomodoro timer that keeps Slack Do Not Disturb and status in sync with your work/break cycle.",
+  "icon": "icon.png",
+  "author": "jake_cheek",
+  "categories": [
+    "Productivity"
+  ],
+  "license": "MIT",
+  "commands": [
+    {
+      "name": "pomodoro-menu-bar",
+      "title": "Pomodoro Timer",
+      "subtitle": "Pomo",
+      "description": "Runs the manual Pomodoro cycle and syncs Slack DND/status",
+      "mode": "menu-bar",
+      "interval": "30s"
+    }
+  ],
+  "preferences": [
+    {
+      "name": "workDurationMinutes",
+      "title": "Work Duration (minutes)",
+      "description": "Nominal duration of the Work phase before it's considered overtime",
+      "type": "textfield",
+      "default": "25",
+      "required": false
+    },
+    {
+      "name": "breakDurationMinutes",
+      "title": "Break Duration (minutes)",
+      "description": "Nominal duration of the Break phase before it's considered overtime",
+      "type": "textfield",
+      "default": "5",
+      "required": false
+    },
+    {
+      "name": "slackXoxcToken",
+      "title": "Slack xoxc Token",
+      "description": "Session token extracted from your Slack browser session (localStorage 'localConfig_v2')",
+      "type": "password",
+      "required": false
+    },
+    {
+      "name": "slackXoxdCookie",
+      "title": "Slack xoxd Cookie",
+      "description": "The 'd' cookie value from your Slack browser session",
+      "type": "password",
+      "required": false
+    }
+  ],
+  "dependencies": {
+    "@raycast/api": "^1.93.2",
+    "@raycast/utils": "^1.17.0"
+  },
+  "devDependencies": {
+    "@raycast/eslint-config": "^1.0.11",
+    "@types/node": "^20.14.0",
+    "@types/react": "^18.3.3",
+    "eslint": "^8.57.0",
+    "prettier": "^3.3.2",
+    "typescript": "^5.4.5"
+  },
+  "scripts": {
+    "build": "ray build -e dist",
+    "dev": "ray develop",
+    "fix-lint": "ray lint --fix",
+    "lint": "ray lint",
+    "publish": "ray publish"
+  }
+}
