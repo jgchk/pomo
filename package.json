@@ -16,7 +16,7 @@
       "subtitle": "Pomo",
       "description": "Runs the manual Pomodoro cycle and syncs Slack DND/status",
       "mode": "menu-bar",
-      "interval": "30s"
+      "interval": "10s"
     }
   ],
   "preferences": [

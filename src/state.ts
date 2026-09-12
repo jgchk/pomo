@@ -25,6 +25,7 @@ export async function loadState(): Promise<PomodoroState> {
   try {
     const parsed = JSON.parse(raw) as PomodoroState;
     if (!parsed || typeof parsed.phase !== "string") return defaultState(Date.now());
+    if ((parsed.phase as string) === "idle-break") return { ...parsed, phase: "idle" };
     return parsed;
   } catch {
     return defaultState(Date.now());
@@ -54,13 +55,8 @@ export function startWork(state: PomodoroState, now: number = Date.now()): Trans
   return { state: enterPhase("work", now), events: [{ type: "enter-work", workStartedAt: now }] };
 }
 
-export function stopWork(state: PomodoroState, now: number = Date.now()): TransitionResult {
-  if (state.phase !== "work") return noop(state);
-  return { state: enterPhase("idle-break", now), events: [] };
-}
-
 export function startBreak(state: PomodoroState, now: number = Date.now()): TransitionResult {
-  if (state.phase !== "idle-break") return noop(state);
+  if (state.phase !== "work") return noop(state);
   return { state: enterPhase("break", now), events: [{ type: "enter-break", breakStartedAt: now }] };
 }
 

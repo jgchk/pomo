@@ -16,7 +16,6 @@ import {
   startNextCycle,
   startWork,
   stopBreak,
-  stopWork,
   TransitionResult,
 } from "./state";
 import { fireNotification } from "./notify";
@@ -25,10 +24,7 @@ import { handlePhaseEvent } from "./slackFocusSync";
 import { Phase, PomodoroState } from "./types";
 
 function formatDuration(ms: number): string {
-  const totalSeconds = Math.floor(ms / 1000);
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
-  return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  return `${Math.floor(ms / 60000)}`;
 }
 
 function phaseLabel(phase: Phase): string {
@@ -37,8 +33,6 @@ function phaseLabel(phase: Phase): string {
       return "Idle";
     case "work":
       return "Work";
-    case "idle-break":
-      return "Ready for Break";
     case "break":
       return "Break";
     case "inbox-check":
@@ -65,10 +59,7 @@ async function runOneShotChecks(initial: PomodoroState): Promise<PomodoroState> 
       current = markNominalNotificationFired(current);
       await saveState(current);
       fireNotification(
-        current.phase === "work" ? "Work timer done" : "Break timer done",
-        current.phase === "work"
-          ? "Nominal work duration reached. Keep going or stop when ready."
-          : "Nominal break duration reached. Wrap up when ready.",
+        current.phase === "work" ? "Work block finished, time to take a break" : "Break block finished, time to work",
       );
     }
   }
@@ -147,13 +138,10 @@ export default function Command() {
     <MenuBarExtra icon={icon} title={title}>
       {slackError && <MenuBarExtra.Item title={`Slack error: ${slackError}`} />}
       {state.phase === "idle" && <MenuBarExtra.Item title="Start Work" onAction={() => handleAction(startWork)} />}
-      {state.phase === "work" && <MenuBarExtra.Item title="Stop Work" onAction={() => handleAction(stopWork)} />}
-      {state.phase === "idle-break" && (
-        <MenuBarExtra.Item title="Start Break" onAction={() => handleAction(startBreak)} />
-      )}
+      {state.phase === "work" && <MenuBarExtra.Item title="Start Break" onAction={() => handleAction(startBreak)} />}
       {state.phase === "break" && <MenuBarExtra.Item title="Stop Break" onAction={() => handleAction(stopBreak)} />}
       {state.phase === "inbox-check" && (
-        <MenuBarExtra.Item title="Start Next Cycle" onAction={() => handleAction(startNextCycle)} />
+        <MenuBarExtra.Item title="Start Work" onAction={() => handleAction(startNextCycle)} />
       )}
       {state.phase !== "idle" && <MenuBarExtra.Item title="Reset" onAction={() => handleAction(resetToIdle)} />}
     </MenuBarExtra>

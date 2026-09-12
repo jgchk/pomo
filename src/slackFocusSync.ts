@@ -8,10 +8,11 @@ import { PhaseEvent } from "./types";
 // endDndSnooze() call on entering inbox-check/idle is what actually clears DND
 // in the normal case, so this is only a backstop ceiling.
 const DND_SNOOZE_MINUTES = 180;
+const FOCUS_EMOJI = ":orangutan:";
 
 function formatEstimate(targetMs: number): string {
   const time = new Date(targetMs).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-  return `Checking Slack at ${time}`;
+  return `Focused. Checking Slack at ${time}`;
 }
 
 async function report(result: SlackResult<unknown>, actionLabel: string): Promise<void> {
@@ -35,16 +36,16 @@ export async function handlePhaseEvent(event: PhaseEvent): Promise<void> {
     case "enter-work": {
       await report(await setDndSnooze(auth, DND_SNOOZE_MINUTES), "DND enable");
       const estimate = event.workStartedAt + prefs.workDurationMs + prefs.breakDurationMs;
-      await report(await setStatus(auth, formatEstimate(estimate)), "status update");
+      await report(await setStatus(auth, formatEstimate(estimate), FOCUS_EMOJI), "status update");
       break;
     }
     case "enter-break": {
       const estimate = event.breakStartedAt + prefs.breakDurationMs;
-      await report(await setStatus(auth, formatEstimate(estimate)), "status update");
+      await report(await setStatus(auth, formatEstimate(estimate), FOCUS_EMOJI), "status update");
       break;
     }
     case "break-overtime-crossed": {
-      await report(await setStatus(auth, "Checking Slack in a few minutes"), "status update");
+      await report(await setStatus(auth, "Focused. Checking Slack in a few minutes", FOCUS_EMOJI), "status update");
       break;
     }
     case "enter-inbox-check":

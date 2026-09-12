@@ -62,11 +62,11 @@ export function endDndSnooze(auth: SlackAuth): Promise<SlackResult<Record<string
   return callSlackApi("dnd.endSnooze", auth, {});
 }
 
-export function setStatus(auth: SlackAuth, text: string): Promise<SlackResult<Record<string, unknown>>> {
-  const profile = JSON.stringify({ status_text: text, status_emoji: "", status_expiration: 0 });
+export function setStatus(auth: SlackAuth, text: string, emoji: string): Promise<SlackResult<Record<string, unknown>>> {
+  const profile = JSON.stringify({ status_text: text, status_emoji: emoji, status_expiration: 0 });
   return callSlackApi("users.profile.set", auth, { profile });
 }
 
 export function clearStatus(auth: SlackAuth): Promise<SlackResult<Record<string, unknown>>> {
-  return setStatus(auth, "");
+  return setStatus(auth, "", "");
 }

@@ -1,4 +1,4 @@
-export type Phase = "idle" | "work" | "idle-break" | "break" | "inbox-check";
+export type Phase = "idle" | "work" | "break" | "inbox-check";
 
 export interface PomodoroState {
   phase: Phase;
